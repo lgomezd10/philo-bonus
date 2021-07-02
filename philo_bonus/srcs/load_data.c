@@ -60,14 +60,15 @@ int	load_forks(t_data *data)
 	if (!data->forks)
 		return (1);
 	memset(data->forks, '\0', size_array);
-	i = 1;
-	while (i <= data->nbr_philos)
+	i = 0;
+	while (i < data->nbr_philos)
 	{
 
-		data->forks[i].nbr = i;
-		data->forks[i].name = get_name(i);
+		data->forks[i].nbr = i + 1;
+		data->forks[i].name = get_name(i + 1);
 		data->forks[i].sem = sem_open(data->forks[i].name, O_CREAT);		
 		i++;
 	}
+	data->sem_print = sem_open(SEM_PRINT, O_CREAT);
 	return (0);
 }
