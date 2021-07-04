@@ -15,10 +15,10 @@ int	main(int argc, char **argv)
 		printf("Argements must be positive int numbers\n");
 		return (1);
 	}
-	if (load_forks(&data) || load_philos(&data))
+	if (load_forks(&data))
 	{
 		printf("System error\n");
 		return (1);
 	}
-	return (throw_threads(&data));
+	return (throw_process(&data));
 }

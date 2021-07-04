@@ -53,7 +53,6 @@ int	load_forks(t_data *data)
 {
 	int	size_array;
 	int	i;
-	char *name;
 
 	size_array = sizeof(t_fork) * data->nbr_philos;
 	data->forks = (t_fork *)malloc(size_array);

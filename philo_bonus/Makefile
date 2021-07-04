@@ -6,9 +6,8 @@ CFLAGS	= -Wall -Wextra -Werror -pthread
 
 FILES = main \
 	utils \
-	str_utils \
 	load_data \
-	philos \
+	philo \
 	main_process 
 
 SRCS = ${addsuffix .c, ${addprefix srcs/, ${FILES}}}

@@ -46,11 +46,17 @@ time_t	get_time(void)
 	return (time);
 }
 
-time_t	time_spent(t_philo *philo)
+time_t	time_spent(t_data *data)
 {
-	return (get_time() - philo->last_meal);
+	return (get_time() - data->last_meal);
 }
 
+void show_error(char *str)
+{
+	printf("%s\n", str);
+	exit (1);
+}
+/*
 void	clean_all(t_data *data)
 {
 	int	i;
@@ -67,4 +73,4 @@ void	clean_all(t_data *data)
 	pthread_mutex_destroy(&data->shared.mutex_print);
 	free(data->philos);
 	free(data->forks);
-}
+}*/

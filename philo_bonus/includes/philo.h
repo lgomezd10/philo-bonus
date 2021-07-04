@@ -22,7 +22,8 @@
 #include <semaphore.h>
 #include <fcntl.h>
 #include <sys/wait.h>
-
+#include <signal.h>
+# define SEM_PRINT "sem_print"
 
 typedef struct s_fork
 {
@@ -31,12 +32,16 @@ typedef struct s_fork
 	char	*name;
 	pthread_t	id_thread;
 	int		capture;
+	pid_t	pid;
 }	t_fork;
 
 typedef struct s_data
 {
 	int				nbr;
 	t_fork			*forks;
+	t_fork			*fork1;
+	t_fork			*fork2;
+	sem_t			*sem_print;
 	int				someone_is_dead;
 	int				nbr_philos;
 	useconds_t		time_to_die;
@@ -47,6 +52,7 @@ typedef struct s_data
 	time_t			init_time;
 }	t_data;
 
+void show_error(char *str);
 int		ft_atol(const char *nptr);
 time_t	get_time(void);
 time_t	time_spent(t_data *data);
@@ -54,13 +60,12 @@ void	clean_all(t_data *data);
 int		load_arguments(t_data *data, int argc, char **argv);
 int		load_forks(t_data *data);
 int		load_philos(t_data *data);
-int		throw_threads(t_data *data);
+int	throw_process(t_data *data);
 void	print_change(t_data *data, char *action, time_t time);
 void	print_dead(t_data *data);
 void	*run_thread(void *data_philo);
 int		run_eat(t_data *data);
 int		run_sleep(t_data *data);
-
-char	*ft_strjoin(char const *s1, char const *s2);
+int run_philo(t_data *data);
 
 #endif

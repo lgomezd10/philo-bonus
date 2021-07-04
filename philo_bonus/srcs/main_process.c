@@ -2,7 +2,7 @@
 
 int	throw_process(t_data *data)
 {
-	int	pid;
+	pid_t	pid;
 	int	status;
 	int i;
 
@@ -11,16 +11,38 @@ int	throw_process(t_data *data)
 	{
 		pid = fork();
 		if (pid == -1)
-			printf("Error que hay que mejorar\n");
-		else if (pid == 0)
 		{
-			data->nbr = i + 1;
-			printf("soy el hijo %d\n");
-			exit(0);
+			printf("Error que hay que mejorar\n");
+			exit(1);
 		}
-		i++;
+		else if (pid == 0)
+			break;
+		else
+		{
+			data->forks[i].pid = pid;
+			i++;
+		}
 	}
-	waitpid(pid, &status, NULL);	
+	if (pid == 0)
+	{
+		data->nbr = i + 1;
+		printf("soy el hijo %d\n", data->nbr);
+		run_philo(data);
+		exit(0);
+	}
+	else
+	{
+		wait(&status);
+		i = 0;
+		while (i < data->nbr_philos)
+		{
+			kill(data->forks[i].pid, SIGKILL);
+			i++;
+		}
+		
+		waitpid(pid, &status, 0);
+	}
+	return (0);
 }
 
 
@@ -35,21 +57,13 @@ void	print_change(t_data *data, char *action, time_t time)
 	sem_post(data->sem_print);
 
 }
-/*
-void	print_dead(t_philo *philo)
+
+void	print_dead(t_data *data)
 {
 	time_t	time_action;
-
-	if (!philo->shared->someone_is_dead)
-	{
-		pthread_mutex_lock(&philo->shared->mutex_print);
-		if (!philo->shared->someone_is_dead)
-		{
-			time_action = get_time() - philo->init_time;
-			printf("%ld %d died\n", time_action, philo->nbr);
-			philo->shared->someone_is_dead = 1;
-		}
-		pthread_mutex_unlock(&philo->shared->mutex_print);
-	}
+	sem_wait(data->sem_print);
+	time_action = get_time() - data->init_time;
+	printf("%ld %d died\n", time_action, data->nbr);
+	exit (0);
 }
-*/
+
