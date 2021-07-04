@@ -43,12 +43,13 @@ int	run_eat(t_data *data)
 {
 	if (time_spent(data) >= data->time_to_die)
 		return (run_die(data));
-	print_change(data, "has taken a fork", get_time());
 	data->last_meal = get_time();
-	print_change(data, "is eating", get_time());	
+	print_change(data, "is eating", get_time());
 	run_action(data, data->time_to_eat);
 	sem_post(data->fork1->sem);
 	sem_post(data->fork2->sem);
+	data->fork1->capture = 0;
+	data->fork2->capture = 0;
 	data->fork1 = 0;
 	data->fork2 = 0;
 	return (0);
@@ -59,7 +60,7 @@ void *wait_sem(void *data)
 	t_fork *fork;
 
 	fork = (t_fork *)data;
-	if (sem_wait(data) == -1)
+	if (sem_wait(fork->sem) == -1)
 		show_error("Not work semaphore");
 	fork->capture = 1;
 	while (1)
@@ -67,24 +68,11 @@ void *wait_sem(void *data)
 	return (0);
 }
 
-int run_process(t_data *data)
+int catch_forks(t_data *data)
 {
-	int i;
-	int has_error;
 	int has_two;
-	t_fork *fork;
+	int i;
 
-	i = 0;	
-	data->init_time = get_time();
-	data->last_meal = get_time();
-	while (i < data->nbr_philos)
-	{
-		fork = &data->forks[i];
-		has_error = pthread_create(&fork->id_thread, NULL, wait_sem, fork);
-		if (has_error)
-			return (1);
-		i++;
-	}
 	has_two = 0;
 	while (!has_two)
 	{
@@ -96,14 +84,16 @@ int run_process(t_data *data)
 				if (!data->fork1)
 				{
 					data->fork1 = &data->forks[i];
-					print_change(data, "has taken a fork", get_time());
+					printf("el philo %d has taken el primer fork: %d\n", data->nbr, data->fork1->nbr);
+					print_change(data, "has taken a fork 1", get_time());
 					if (data->nbr_philos == 1)
 						return (run_die(data));
 				}
 				else if (!data->fork2 && data->forks[i].nbr != data->fork1->nbr)
 				{
 					data->fork2 = &data->forks[i];
-					print_change(data, "has taken a fork", get_time());
+					printf("el philo %d has taken el segundo fork: %d\n", data->nbr, data->fork2->nbr);
+					print_change(data, "has taken a fork 2", get_time());
 				}
 				else if (data->fork1 && data->fork2)
 					has_two = 1;
@@ -111,6 +101,26 @@ int run_process(t_data *data)
 			i++;          
 		}      
 	}
+	return (0);
+}
+
+int run_process(t_data *data)
+{
+	int i;
+	int has_error;
+	t_fork *fork;
+
+	i = 0;	
+	
+	while (i < data->nbr_philos)
+	{
+		fork = &data->forks[i];
+		has_error = pthread_create(&fork->id_thread, NULL, wait_sem, fork);
+		if (has_error)
+			return (1);
+		i++;
+	}
+	catch_forks(data);
 	i = 0;
 	while (i < data->nbr_philos)
 	{
@@ -118,7 +128,6 @@ int run_process(t_data *data)
 		i++;
 	}
 	i = 0;
-	has_two = 0;
 	while (i < data->nbr_philos)
 	{
 		if (data->forks[i].capture)
@@ -127,18 +136,25 @@ int run_process(t_data *data)
 			{
 				if(sem_post(data->forks[i].sem) == - 1)
 					show_error("Not work semaphore");
+				data->forks[i].capture = 0;
 			}
 		}
 		i++;
 	}
 	run_eat(data);
+	run_sleep(data);
 	return (0);
 }
 
 int run_philo(t_data *data)
 {
+	data->init_time = get_time();
+	data->last_meal = get_time();
+	if (data->nbr % 2 == 0)
+		usleep(5000);
 	while (1)
 	{
+		
 		run_process(data);
 	}
 	return (0);

@@ -40,12 +40,13 @@ char *get_name(int nbr)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * 5);
-	name[0] = 's';
-	name[1] = 'e';
-	name[2] = 'm';
-	name[3] = '0' + nbr;
-	name[4] = '\0';
+	name = malloc(sizeof(char) * 6);
+	name[0] = '/';
+	name[1] = 's';
+	name[2] = 'e';
+	name[3] = 'm';
+	name[4] = '0' + nbr;
+	name[5] = '\0';
 	return (name);
 }
 
@@ -65,9 +66,30 @@ int	load_forks(t_data *data)
 
 		data->forks[i].nbr = i + 1;
 		data->forks[i].name = get_name(i + 1);
-		data->forks[i].sem = sem_open(data->forks[i].name, O_CREAT);		
+		printf("Se va a crear el semaforo %s\n", data->forks[i].name);
+		data->forks[i].sem = sem_open(data->forks[i].name, O_CREAT, 0644, 1);
+		if 	(data->forks[i].sem == SEM_FAILED)
+			show_error("Semaphore not work 1");
 		i++;
 	}
-	data->sem_print = sem_open(SEM_PRINT, O_CREAT);
+	printf("se va a crear el semaforo %s\n", SEM_PRINT);
+	data->sem_print = sem_open(SEM_PRINT, O_CREAT, 0644, 1);
+	if 	(data->sem_print == SEM_FAILED)
+			show_error("Semaphore not work 2");
+	
+
+/*
+	i = 0;
+	while (i < data->nbr_philos)
+	{
+		sem_close(data->forks[i].sem);
+		sem_unlink(data->forks[i].name);
+		i++;
+	}
+	sem_close(data->sem_print);
+	sem_unlink(SEM_PRINT);
+	exit (0);
+*/
+
 	return (0);
 }

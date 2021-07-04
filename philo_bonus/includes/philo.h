@@ -23,7 +23,7 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <signal.h>
-# define SEM_PRINT "sem_print"
+# define SEM_PRINT "/sem_print4"
 
 typedef struct s_fork
 {
@@ -47,7 +47,7 @@ typedef struct s_data
 	useconds_t		time_to_die;
 	useconds_t		time_to_eat;
 	useconds_t		time_to_sleep;	
-	int			times_must_eat;
+	int				times_must_eat;
 	time_t			last_meal;
 	time_t			init_time;
 }	t_data;
