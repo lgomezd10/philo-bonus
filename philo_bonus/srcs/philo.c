@@ -44,7 +44,7 @@ int	run_eat(t_data *data)
 	if (time_spent(data) >= data->time_to_die)
 		return (run_die(data));
 	data->last_meal = get_time();
-	print_change(data, "is eating", get_time());
+	print_change(data, "has taken a fork", get_time());
 	run_action(data, data->time_to_eat);
 	free_all_forks(data);
 	return (0);
@@ -57,9 +57,8 @@ void *wait_sem(void *data)
 	fork = (t_fork *)data;
 	if (sem_wait(fork->sem) == -1)
 		show_error("Not work semaphore");
+	print_change(data, "is eating", get_time());
 	fork->capture = 1;
-	while (1)
-		usleep(1000);
 	return (0);
 }
 
@@ -93,30 +92,32 @@ int catch_forks(t_data *data)
 	return (0);
 }
 
+t_fork *get_second_fork(t_data *data, int nbr)
+{
+	int half;
+
+	half = data->nbr_philos / 2;
+	if (nbr > half)
+		return (&data->forks[(nbr - half) - 1]);
+	else
+		run_eat (&data->forks[(nbr + half) - 1]);
+}
+
 int run_process(t_data *data)
 {
-	int i;
 	int has_error;
-	t_fork *fork;
-
-	i = 0;	
+	
 	// si es la primera vez que entra y soy par, si no consigo el segundo tenedor en x tiempo. Soltamos todo y dormimos x tiempo
-	while (i < data->nbr_philos)
-	{
-		fork = &data->forks[i];
-		has_error = pthread_create(&fork->id_thread, NULL, wait_sem, fork);
-		if (has_error)
-			return (1);
-		i++;
-	}
-	catch_forks(data);
-	i = 0;
-	while (i < data->nbr_philos)
-	{
-		pthread_detach(data->forks[i].id_thread);
-		i++;
-	}
-	free_forks_needless(data);
+	data->fork1 = &data->forks[data->nbr - 1];
+	has_error = pthread_create(data->fork1, NULL, wait_sem, data->fork1);
+	if (has_error)
+		return (1);
+	data->fork2 = get_second_fork(data, data->nbr);
+	has_error = pthread_create(data->fork2, NULL, wait_sem, data->fork2);
+	if (has_error)
+		return (1);
+	pthread_join(data->fork1->id_thread, NULL);
+	pthread_join(data->fork2->id_thread, NULL);
 	run_eat(data);
 	run_sleep(data);
 	return (0);

@@ -33,6 +33,7 @@ typedef struct s_fork
 	pthread_t	id_thread;
 	int		capture;
 	pid_t	pid;
+	int		nbr_forks;
 }	t_fork;
 
 typedef struct s_data
@@ -50,6 +51,7 @@ typedef struct s_data
 	int				times_must_eat;
 	time_t			last_meal;
 	time_t			init_time;
+	int				nbr_captured;
 }	t_data;
 
 void show_error(char *str);

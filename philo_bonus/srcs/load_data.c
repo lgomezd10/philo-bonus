@@ -66,6 +66,7 @@ int	load_forks(t_data *data)
 
 		data->forks[i].nbr = i + 1;
 		data->forks[i].name = get_name(i + 1);
+		data->forks[i].nbr_forks = data->nbr_philos;
 		printf("Se va a crear el semaforo %s\n", data->forks[i].name);
 		data->forks[i].sem = sem_open(data->forks[i].name, O_CREAT, 0644, 1);
 		if 	(data->forks[i].sem == SEM_FAILED)
