@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:52 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/06/30 20:16:10 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/05 17:54:23 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,36 +50,30 @@ char *get_name(int nbr)
 	return (name);
 }
 
-int	load_forks(t_data *data)
+static void open_sem(t_data *data)
 {
-	int	size_array;
-	int	i;
-
-	size_array = sizeof(t_fork) * data->nbr_philos;
-	data->forks = (t_fork *)malloc(size_array);
-	if (!data->forks)
-		return (1);
-	memset(data->forks, '\0', size_array);
+	int i;
+	
 	i = 0;
 	while (i < data->nbr_philos)
 	{
 
 		data->forks[i].nbr = i + 1;
 		data->forks[i].name = get_name(i + 1);
-		data->forks[i].nbr_forks = data->nbr_philos;
-		printf("Se va a crear el semaforo %s\n", data->forks[i].name);
 		data->forks[i].sem = sem_open(data->forks[i].name, O_CREAT, 0644, 1);
 		if 	(data->forks[i].sem == SEM_FAILED)
-			show_error("Semaphore not work 1");
+			show_error("Semaphore error");
 		i++;
 	}
-	printf("se va a crear el semaforo %s\n", SEM_PRINT);
 	data->sem_print = sem_open(SEM_PRINT, O_CREAT, 0644, 1);
 	if 	(data->sem_print == SEM_FAILED)
-			show_error("Semaphore not work 2");
-	
+			show_error("Semaphore error");
+}
 
-/*
+static void unlink_sem(t_data *data)
+{
+	int i;
+
 	i = 0;
 	while (i < data->nbr_philos)
 	{
@@ -89,8 +83,19 @@ int	load_forks(t_data *data)
 	}
 	sem_close(data->sem_print);
 	sem_unlink(SEM_PRINT);
-	exit (0);
-*/
+}
 
+int	load_forks(t_data *data)
+{
+	int	size_array;
+
+	size_array = sizeof(t_fork) * data->nbr_philos;
+	data->forks = (t_fork *)malloc(size_array);
+	if (!data->forks)
+		return (1);
+	memset(data->forks, '\0', size_array);
+	open_sem(data);
+	unlink_sem(data);
+	open_sem(data);
 	return (0);
 }

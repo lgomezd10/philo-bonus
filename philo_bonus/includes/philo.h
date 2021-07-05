@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:20 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/06/30 20:13:11 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/05 17:43:09 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <signal.h>
-# define SEM_PRINT "/sem_print4"
+# define SEM_PRINT "/sem_print"
 
 typedef struct s_fork
 {
@@ -33,7 +33,6 @@ typedef struct s_fork
 	pthread_t	id_thread;
 	int		capture;
 	pid_t	pid;
-	int		nbr_forks;
 }	t_fork;
 
 typedef struct s_data
@@ -51,7 +50,6 @@ typedef struct s_data
 	int				times_must_eat;
 	time_t			last_meal;
 	time_t			init_time;
-	int				nbr_captured;
 }	t_data;
 
 void show_error(char *str);
@@ -66,10 +64,11 @@ int	throw_process(t_data *data);
 void	print_change(t_data *data, char *action, time_t time);
 void	print_dead(t_data *data);
 void	*run_thread(void *data_philo);
-int	run_die(t_data *data);
+
 int run_philo(t_data *data);
-void free_forks_needless(t_data *data);
-void free_all_forks(t_data *data);
-int check_captured_fork(t_data *data, int nbr);
+int	run_die(t_data *data);
+int	run_action(t_data *data, useconds_t time_action);
+int	run_sleep(t_data *data);
+int	run_eat(t_data *data);
 
 #endif
