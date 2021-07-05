@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/07/05 20:01:56 by lgomez-d          #+#    #+#             */
+/*   Updated: 2021/07/05 20:03:41 by lgomez-d         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philo.h"
 
 int	run_die(t_data *data)
@@ -28,10 +40,10 @@ int	run_sleep(t_data *data)
 {
 	time_t	next_meal;
 
-	print_change(data, "is sleeping", get_time());
+	print_change(data, "is sleeping");
 	if (run_action(data, data->time_to_sleep))
 		return (1);
-	print_change(data, "is thinking", get_time());
+	print_change(data, "is thinking");
 	next_meal = data->time_to_eat - data->time_to_sleep;
 	if (next_meal >= 0 && \
 		time_spent(data) + next_meal > data->time_to_die)
@@ -44,12 +56,12 @@ int	run_eat(t_data *data)
 	if (time_spent(data) >= data->time_to_die)
 		return (run_die(data));
 	data->last_meal = get_time();
-	print_change(data, "is eating", get_time());
+	print_change(data, "is eating");
 	run_action(data, data->time_to_eat);
-	if(sem_post(data->fork1->sem) == - 1)
-		show_error("Not work semaphore");
-	if(sem_post(data->fork2->sem) == - 1)
-		show_error("Not work semaphore");
+	if (sem_post(data->fork1->sem) == -1)
+		show_error("sem_post error");
+	if (sem_post(data->fork2->sem) == -1)
+		show_error("sem_post error");
 	data->fork1->capture = 0;
 	data->fork2->capture = 0;
 	data->fork1 = 0;

@@ -20,5 +20,6 @@ int	main(int argc, char **argv)
 		printf("System error\n");
 		return (1);
 	}
-	return (throw_process(&data));
+	throw_process(&data);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:20 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/06/30 20:13:11 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/05 20:09:33 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,5 @@ int		throw_threads(t_data *data);
 void	print_change(t_philo *philo, char *action, time_t time);
 void	print_dead(t_philo *philo);
 void	*run_thread(void *data_philo);
-int		run_eat(t_philo *philo);
-int		run_sleep(t_philo *philo);
 
 #endif

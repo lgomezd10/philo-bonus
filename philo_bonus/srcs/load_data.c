@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/06/30 19:48:52 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/05 17:54:23 by lgomez-d         ###   ########.fr       */
+/*   Created: 2021/07/05 19:47:11 by lgomez-d          #+#    #+#             */
+/*   Updated: 2021/07/05 19:49:22 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ int	load_arguments(t_data *data, int argc, char **argv)
 	return (is_int);
 }
 
-char *get_name(int nbr)
+char	*get_name(int nbr)
 {
-	char *name;
+	char	*name;
 
 	name = malloc(sizeof(char) * 6);
 	name[0] = '/';
@@ -50,29 +50,28 @@ char *get_name(int nbr)
 	return (name);
 }
 
-static void open_sem(t_data *data)
+static void	open_sem(t_data *data)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
 	while (i < data->nbr_philos)
 	{
-
 		data->forks[i].nbr = i + 1;
 		data->forks[i].name = get_name(i + 1);
 		data->forks[i].sem = sem_open(data->forks[i].name, O_CREAT, 0644, 1);
-		if 	(data->forks[i].sem == SEM_FAILED)
+		if (data->forks[i].sem == SEM_FAILED)
 			show_error("Semaphore error");
 		i++;
 	}
 	data->sem_print = sem_open(SEM_PRINT, O_CREAT, 0644, 1);
-	if 	(data->sem_print == SEM_FAILED)
-			show_error("Semaphore error");
+	if (data->sem_print == SEM_FAILED)
+		show_error("Semaphore error");
 }
 
-static void unlink_sem(t_data *data)
+static void	unlink_sem(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < data->nbr_philos)

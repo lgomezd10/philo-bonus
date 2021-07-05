@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_process.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/07/05 19:49:35 by lgomez-d          #+#    #+#             */
+/*   Updated: 2021/07/05 20:00:45 by lgomez-d         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philo.h"
 
-void wait_process(t_data *data)
+static void	wait_process(t_data *data)
 {
-	int status;
-	int i;
+	int	status;
+	int	i;
 
 	status = 0;
 	while (!status && data->nbr_philos)
@@ -29,19 +41,20 @@ void wait_process(t_data *data)
 	exit (0);
 }
 
-int	throw_process(t_data *data)
+void	throw_process(t_data *data)
 {
 	pid_t	pid;
-	int i;
+	int		i;
 
 	i = 0;
+	data->init_time = get_time();
 	while (i < data->nbr_philos)
 	{
 		pid = fork();
 		if (pid == -1)
 			show_error("fork error");
 		else if (pid == 0)
-			break;
+			break ;
 		else
 		{
 			data->forks[i].pid = pid;
@@ -52,33 +65,29 @@ int	throw_process(t_data *data)
 	{
 		data->nbr = i + 1;
 		run_philo(data);
-		exit(0);
 	}
 	else
 		wait_process(data);
-	return (0);
 }
 
-
-void	print_change(t_data *data, char *action, time_t time)
+void	print_change(t_data *data, char *action)
 {
 	time_t	time_action;
 
 	if (sem_wait(data->sem_print) == -1)
 		show_error("Error in semaphore print change");
-	time_action = time - data->init_time;
+	time_action = get_time() - data->init_time;
 	printf("%ld %d %s\n", time_action, data->nbr, action);
 	sem_post(data->sem_print);
-
 }
 
 void	print_dead(t_data *data)
 {
 	time_t	time_action;
+
 	if (sem_wait(data->sem_print) == -1)
 		show_error("Error in semaphore print dead");
 	time_action = get_time() - data->init_time;
 	printf("%ld %d died\n", time_action, data->nbr);
 	exit (1);
 }
-

@@ -6,13 +6,13 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 18:46:13 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/06/30 20:21:22 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/05 20:09:33 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-int	run_die(t_philo *philo)
+static int	run_die(t_philo *philo)
 {
 	time_t	time_sleep;
 
@@ -23,7 +23,7 @@ int	run_die(t_philo *philo)
 	return (1);
 }
 
-int	run_action(t_philo *philo, useconds_t time_action)
+static int	run_action(t_philo *philo, useconds_t time_action)
 {
 	time_t	finish;
 
@@ -36,7 +36,7 @@ int	run_action(t_philo *philo, useconds_t time_action)
 	return (0);
 }
 
-int	run_sleep(t_philo *philo)
+static int	run_sleep(t_philo *philo)
 {
 	time_t	next_meal;
 
@@ -51,7 +51,7 @@ int	run_sleep(t_philo *philo)
 	return (0);
 }
 
-int	run_eat(t_philo *philo)
+static int	run_eat(t_philo *philo)
 {
 	if (time_spent(philo) >= philo->shared->time_to_die)
 		return (run_die(philo));
