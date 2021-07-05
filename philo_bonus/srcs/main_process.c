@@ -33,7 +33,8 @@ int	throw_process(t_data *data)
 	}
 	else
 	{
-		wait(&status);
+		waitpid(-1, &status, 0);
+		//wait(&status);
 		i = 0;
 		while (i < data->nbr_philos)
 		{

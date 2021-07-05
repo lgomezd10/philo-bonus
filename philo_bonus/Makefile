@@ -8,6 +8,7 @@ FILES = main \
 	utils \
 	load_data \
 	philo \
+	philo_utils \
 	main_process 
 
 SRCS = ${addsuffix .c, ${addprefix srcs/, ${FILES}}}

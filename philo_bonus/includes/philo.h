@@ -64,8 +64,10 @@ int	throw_process(t_data *data);
 void	print_change(t_data *data, char *action, time_t time);
 void	print_dead(t_data *data);
 void	*run_thread(void *data_philo);
-int		run_eat(t_data *data);
-int		run_sleep(t_data *data);
+int	run_die(t_data *data);
 int run_philo(t_data *data);
+void free_forks_needless(t_data *data);
+void free_all_forks(t_data *data);
+int check_captured_fork(t_data *data, int nbr);
 
 #endif

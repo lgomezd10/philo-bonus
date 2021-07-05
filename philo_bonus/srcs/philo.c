@@ -46,12 +46,7 @@ int	run_eat(t_data *data)
 	data->last_meal = get_time();
 	print_change(data, "is eating", get_time());
 	run_action(data, data->time_to_eat);
-	sem_post(data->fork1->sem);
-	sem_post(data->fork2->sem);
-	data->fork1->capture = 0;
-	data->fork2->capture = 0;
-	data->fork1 = 0;
-	data->fork2 = 0;
+	free_all_forks(data);
 	return (0);
 }
 
@@ -70,36 +65,30 @@ void *wait_sem(void *data)
 
 int catch_forks(t_data *data)
 {
-	int has_two;
+	int captured;
 	int i;
+	int firts_try;
+	time_t time;
 
-	has_two = 0;
-	while (!has_two)
+	captured = 0;
+	firts_try = 1;
+	time = get_time();
+	while (captured < 2)
 	{
 		i = 0;
-		while (!has_two && i < data->nbr_philos)
+		while (captured < 2 && i < data->nbr_philos)
 		{
 			if (data->forks[i].capture)
-			{
-				if (!data->fork1)
-				{
-					data->fork1 = &data->forks[i];
-					printf("el philo %d has taken el primer fork: %d\n", data->nbr, data->fork1->nbr);
-					print_change(data, "has taken a fork 1", get_time());
-					if (data->nbr_philos == 1)
-						return (run_die(data));
-				}
-				else if (!data->fork2 && data->forks[i].nbr != data->fork1->nbr)
-				{
-					data->fork2 = &data->forks[i];
-					printf("el philo %d has taken el segundo fork: %d\n", data->nbr, data->fork2->nbr);
-					print_change(data, "has taken a fork 2", get_time());
-				}
-				else if (data->fork1 && data->fork2)
-					has_two = 1;
-			}
+				captured = check_captured_fork(data, i);
 			i++;          
-		}      
+		}
+		if (firts_try && captured == 1 && get_time() - time >= 5 && get_time() - time < 100)
+		{
+			printf("EL PHILO %d  libera el tenedor despues de que %ld - %ld sea %ld\n", data->nbr, get_time(), time, get_time() - time);
+			free_all_forks(data);
+			usleep(10000);
+			firts_try = 0;
+		}
 	}
 	return (0);
 }
@@ -111,7 +100,7 @@ int run_process(t_data *data)
 	t_fork *fork;
 
 	i = 0;	
-	
+	// si es la primera vez que entra y soy par, si no consigo el segundo tenedor en x tiempo. Soltamos todo y dormimos x tiempo
 	while (i < data->nbr_philos)
 	{
 		fork = &data->forks[i];
@@ -127,20 +116,7 @@ int run_process(t_data *data)
 		pthread_detach(data->forks[i].id_thread);
 		i++;
 	}
-	i = 0;
-	while (i < data->nbr_philos)
-	{
-		if (data->forks[i].capture)
-		{
-			if (data->forks[i].nbr != data->fork1->nbr && data->forks[i].nbr != data->fork2->nbr)
-			{
-				if(sem_post(data->forks[i].sem) == - 1)
-					show_error("Not work semaphore");
-				data->forks[i].capture = 0;
-			}
-		}
-		i++;
-	}
+	free_forks_needless(data);
 	run_eat(data);
 	run_sleep(data);
 	return (0);
@@ -150,8 +126,11 @@ int run_philo(t_data *data)
 {
 	data->init_time = get_time();
 	data->last_meal = get_time();
-	if (data->nbr % 2 == 0)
-		usleep(5000);
+	if (data->nbr > data->nbr_philos / 2)
+	{
+		printf("el hijo %d va a dormir\n", data->nbr);
+		usleep(2000);
+	}
 	while (1)
 	{
 		
