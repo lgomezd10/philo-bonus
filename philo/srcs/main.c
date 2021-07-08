@@ -6,11 +6,13 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 20:03:09 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/06/30 20:03:33 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/08 20:53:13 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+
+// hacer que funcione para ./philo 3 310 150 150
 
 int	main(int argc, char **argv)
 {
