@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 20:04:06 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/05 20:04:15 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/08 20:33:28 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void show_error(char *str)
 	printf("%s\n", str);
 	exit (1);
 }
-/*
+
 void	clean_all(t_data *data)
 {
 	int	i;
@@ -64,13 +64,12 @@ void	clean_all(t_data *data)
 	i = 0;
 	if (data->forks)
 	{
-		while (i < data->shared.nbr_philos)
+		while (i < data->nbr_philos)
 		{
-			pthread_mutex_destroy(&data->forks[i].mutex);
+			free(data->forks[i].name);
+			data->forks[i].name = 0;
 			i++;
 		}
 	}
-	pthread_mutex_destroy(&data->shared.mutex_print);
-	free(data->philos);
 	free(data->forks);
-}*/
+}

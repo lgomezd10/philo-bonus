@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 19:49:35 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/05 20:00:45 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/08 20:48:33 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,20 @@ static void	wait_process(t_data *data)
 {
 	int	status;
 	int	i;
+	int ret;
+	int	nbr_philos;
 
 	status = 0;
-	while (!status && data->nbr_philos)
+	nbr_philos = data->nbr_philos;
+	while (!status && nbr_philos)
 	{
 		waitpid(-1, &status, 0);
-		data->nbr_philos--;
+		nbr_philos--;
 	}
 	i = 0;
 	while (i < data->nbr_philos)
 	{
-		kill(data->forks[i].pid, SIGKILL);
+		ret = kill(data->forks[i].pid, SIGKILL);
 		i++;
 	}
 	i = 0;
@@ -38,6 +41,8 @@ static void	wait_process(t_data *data)
 	}
 	sem_unlink(SEM_PRINT);
 	sem_close(data->sem_print);
+	clean_all(data);
+	system("leaks philo");
 	exit (0);
 }
 
@@ -67,7 +72,9 @@ void	throw_process(t_data *data)
 		run_philo(data);
 	}
 	else
+	{
 		wait_process(data);
+	}
 }
 
 void	print_change(t_data *data, char *action)

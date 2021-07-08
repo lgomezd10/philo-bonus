@@ -21,5 +21,6 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	throw_process(&data);
+	
 	return (0);
 }

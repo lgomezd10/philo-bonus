@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 19:47:11 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/05 19:49:22 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/08 20:39:09 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	load_arguments(t_data *data, int argc, char **argv)
 	i = 1;
 	is_int = 1;
 	data->nbr_philos = ft_atol(argv[i++]);
+	printf("el número de philos es %d\n", data->nbr_philos);
 	is_int = is_int && data->nbr_philos >= 0;
 	data->time_to_die = ft_atol(argv[i++]);
 	is_int = is_int && (int)data->time_to_die >= 0;
@@ -41,6 +42,8 @@ char	*get_name(int nbr)
 	char	*name;
 
 	name = malloc(sizeof(char) * 6);
+	if (!name)
+		show_error("Malloc error");
 	name[0] = '/';
 	name[1] = 's';
 	name[2] = 'e';

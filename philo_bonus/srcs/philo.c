@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 19:44:11 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/05 20:05:20 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/08 20:47:27 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,20 @@ static void	run_process(t_data *data)
 		pthread_create(&data->fork2->id_thread, NULL, wait_sem, data->fork2))
 		show_error("pthread_create error");
 	while (data->fork2 && !data->fork1->capture && !data->fork2->capture)
+	{
 		usleep(1000);
+		if (time_spent(data) > data->time_to_die)
+			run_die(data);
+	}
 	print_change(data, "has taken a fork");
 	if (data->nbr_philos == 1)
 		run_die(data);
 	while (!data->fork1->capture || !data->fork2->capture)
+	{
 		usleep(1000);
+		if (time_spent(data) > data->time_to_die)
+			run_die(data);
+	}
 	print_change(data, "has taken a fork");
 	run_eat(data);
 	run_sleep(data);
