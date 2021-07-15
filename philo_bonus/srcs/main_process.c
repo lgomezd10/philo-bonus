@@ -16,7 +16,6 @@ static void	wait_process(t_data *data)
 {
 	int	status;
 	int	i;
-	int ret;
 	int	nbr_philos;
 
 	status = 0;
@@ -29,7 +28,7 @@ static void	wait_process(t_data *data)
 	i = 0;
 	while (i < data->nbr_philos)
 	{
-		ret = kill(data->forks[i].pid, SIGKILL);
+		kill(data->forks[i].pid, SIGKILL);
 		i++;
 	}
 	i = 0;
@@ -42,7 +41,6 @@ static void	wait_process(t_data *data)
 	sem_unlink(SEM_PRINT);
 	sem_close(data->sem_print);
 	clean_all(data);
-	system("leaks philo");
 	exit (0);
 }
 

@@ -2,7 +2,7 @@ NAME = philo
 
 RM = rm -rf
 
-CFLAGS	= -Wall -Wextra -Werror 
+CFLAGS	= -Wall -Wextra -Werror -pthread
 
 FILES = main \
 	utils \

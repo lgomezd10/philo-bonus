@@ -12,6 +12,28 @@
 
 #include "../includes/philo.h"
 
+static void wait_for_dead(t_data *data)
+{
+	int i;
+	t_philo	*philo;
+
+	usleep(data->shared.time_to_die * 1000);
+	while (!data->shared.someone_is_dead)
+	{
+		i = 0;
+		while (i < data->shared.nbr_philos)
+		{
+			philo = &data->philos[i];
+			if (time_spent(philo) + 2 > data->shared.time_to_die)
+			{
+				print_dead(philo);
+				pthread_detach(philo->id_thread);
+			}
+			i++;
+		}		
+	}
+}
+
 int	throw_threads(t_data *data)
 {
 	int		i;
@@ -27,6 +49,7 @@ int	throw_threads(t_data *data)
 			return (1);
 		i++;
 	}
+	wait_for_dead(data);
 	i = 0;
 	while (i < data->shared.nbr_philos)
 	{
@@ -35,6 +58,7 @@ int	throw_threads(t_data *data)
 		i++;
 	}
 	clean_all(data);
+	system("leaks philo");
 	return (0);
 }
 
