@@ -6,25 +6,16 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 19:49:35 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/08 20:48:33 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/26 16:25:54 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-static void	wait_process(t_data *data)
+static void	end_process(t_data *data)
 {
-	int	status;
 	int	i;
-	int	nbr_philos;
 
-	status = 0;
-	nbr_philos = data->nbr_philos;
-	while (!status && nbr_philos)
-	{
-		waitpid(-1, &status, 0);
-		nbr_philos--;
-	}
 	i = 0;
 	while (i < data->nbr_philos)
 	{
@@ -42,6 +33,21 @@ static void	wait_process(t_data *data)
 	sem_close(data->sem_print);
 	clean_all(data);
 	exit (0);
+}
+
+static void	wait_process(t_data *data)
+{
+	int	status;
+	int	nbr_philos;
+
+	status = 0;
+	nbr_philos = data->nbr_philos;
+	while (!status && nbr_philos)
+	{
+		waitpid(-1, &status, 0);
+		nbr_philos--;
+	}
+	end_process(data);
 }
 
 void	throw_process(t_data *data)
@@ -70,9 +76,7 @@ void	throw_process(t_data *data)
 		run_philo(data);
 	}
 	else
-	{
 		wait_process(data);
-	}
 }
 
 void	print_change(t_data *data, char *action)

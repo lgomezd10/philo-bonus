@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 18:46:13 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/05 20:09:33 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/26 15:41:22 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,10 @@ static int	run_action(t_philo *philo, useconds_t time_action)
 
 static int	run_sleep(t_philo *philo)
 {
-	time_t	next_meal;
-
 	print_change(philo, "is sleeping", get_time());
 	if (run_action(philo, philo->shared->time_to_sleep))
 		return (1);
 	print_change(philo, "is thinking", get_time());
-	next_meal = philo->shared->time_to_eat - philo->shared->time_to_sleep;
-	if (next_meal >= 0 && \
-		time_spent(philo) + next_meal > philo->shared->time_to_die)
-		return (run_die(philo));
 	return (0);
 }
 
@@ -103,5 +97,6 @@ void	*run_thread(void *data_philo)
 			run_sleep(philo);
 		philo->times_must_eat--;
 	}
+	philo->end = 1;
 	return (0);
 }

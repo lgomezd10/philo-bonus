@@ -6,28 +6,35 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 20:02:30 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/06/30 20:03:11 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/26 15:42:26 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-static void wait_for_dead(t_data *data)
+static void	wait_for_dead(t_data *data)
 {
-	int i;
+	int		i;
 	t_philo	*philo;
+	int		end_all;
 
 	usleep(data->shared.time_to_die * 1000);
-	while (!data->shared.someone_is_dead)
+	end_all = 0;
+	while (!data->shared.someone_is_dead && !end_all)
 	{
 		i = 0;
+		end_all = 1;
 		while (i < data->shared.nbr_philos)
 		{
 			philo = &data->philos[i];
-			if (time_spent(philo) + 2 > data->shared.time_to_die)
+			if (!philo->end)
 			{
-				print_dead(philo);
-				pthread_detach(philo->id_thread);
+				end_all = 0;
+				if (time_spent(philo) > data->shared.time_to_die + 2)
+				{
+					print_dead(philo);
+					pthread_detach(philo->id_thread);
+				}
 			}
 			i++;
 		}		
@@ -58,7 +65,6 @@ int	throw_threads(t_data *data)
 		i++;
 	}
 	clean_all(data);
-	system("leaks philo");
 	return (0);
 }
 

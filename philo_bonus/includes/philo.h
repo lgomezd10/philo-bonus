@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:20 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/08 20:34:12 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/26 16:12:43 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,10 @@ void	print_change(t_data *data, char *action);
 void	print_dead(t_data *data);
 void	*run_thread(void *data_philo);
 void	run_philo(t_data *data);
-int	run_die(t_data *data);
-int	run_action(t_data *data, useconds_t time_action);
-int	run_sleep(t_data *data);
-int	run_eat(t_data *data);
+int		run_die(t_data *data);
+int		run_action(t_data *data, useconds_t time_action);
+int		run_sleep(t_data *data);
+int		run_eat(t_data *data);
 void	clean_all(t_data *data);
 
 #endif

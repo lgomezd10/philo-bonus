@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 20:03:09 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/08 20:53:13 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/26 15:08:30 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,6 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	if (load_forks(&data) || load_philos(&data))
-	{
-		printf("System error\n");
 		return (1);
-	}
 	return (throw_threads(&data));
 }

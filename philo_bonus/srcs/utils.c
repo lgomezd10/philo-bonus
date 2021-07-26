@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 20:04:06 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/08 20:33:28 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/26 16:26:53 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ time_t	time_spent(t_data *data)
 	return (get_time() - data->last_meal);
 }
 
-void show_error(char *str)
+void	show_error(char *str)
 {
 	printf("%s\n", str);
 	exit (1);

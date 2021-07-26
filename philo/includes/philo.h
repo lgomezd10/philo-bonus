@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:20 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/05 20:09:33 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/26 15:43:41 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef struct s_shared
 	int				nbr_philos;
 	useconds_t		time_to_die;
 	useconds_t		time_to_eat;
-	useconds_t		time_to_sleep;	
+	useconds_t		time_to_sleep;
 	pthread_mutex_t	mutex_print;
 }	t_shared;
 
@@ -47,7 +47,7 @@ typedef struct s_philo
 	t_shared		*shared;
 	time_t			last_meal;
 	time_t			init_time;
-	int				is_dead;
+	int				end;
 }	t_philo;
 
 typedef struct s_data
