@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 18:46:13 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/26 15:41:22 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/26 20:43:07 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	*run_thread(void *data_philo)
 	philo->last_meal = get_time();
 	philo->mutex1 = &philo->fork_right->mutex;
 	philo->mutex2 = &philo->fork_left->mutex;
-	if (philo->nbr % 2 != 0)
+	if (philo->nbr % 2 != 0 || philo->shared->nbr_philos == philo->nbr)
 	{
 		philo->mutex1 = &philo->fork_left->mutex;
 		philo->mutex2 = &philo->fork_right->mutex;
@@ -89,9 +89,8 @@ void	*run_thread(void *data_philo)
 	while (!philo->shared->someone_is_dead && \
 		(philo->times_must_eat < 0 || philo->times_must_eat))
 	{
-		if (philo->nbr % 2 == 0 || \
-			(philo->nbr % 2 != 0 && philo->shared->nbr_philos == philo->nbr))
-			usleep(2000);
+		if (philo->nbr % 2 == 0 || philo->shared->nbr_philos == philo->nbr)
+			usleep(5000);
 		run_eat(philo);
 		if (!philo->shared->someone_is_dead)
 			run_sleep(philo);
