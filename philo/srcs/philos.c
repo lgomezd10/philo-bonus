@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 18:46:13 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/26 20:43:07 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/27 20:56:49 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ static int	run_action(t_philo *philo, useconds_t time_action)
 	finish = get_time() + time_action;
 	if (time_spent(philo) + time_action >= philo->shared->time_to_die)
 		run_die(philo);
-	usleep((time_action - 5) * (useconds_t)1000);
+	if (time_action > 10)
+		usleep((time_action - 10) * (useconds_t)1000);
 	while (get_time() < finish)
 		usleep(1000);
 	return (0);
@@ -42,6 +43,8 @@ static int	run_sleep(t_philo *philo)
 	if (run_action(philo, philo->shared->time_to_sleep))
 		return (1);
 	print_change(philo, "is thinking", get_time());
+	if (philo->shared->nbr_philos % 2 != 0 && philo->nbr == 1)
+		usleep(2000);
 	return (0);
 }
 
@@ -62,7 +65,7 @@ static int	run_eat(t_philo *philo)
 			if (time_spent(philo) < philo->shared->time_to_die)
 			{
 				philo->last_meal = get_time();
-				print_change(philo, "is eating", get_time());
+				print_change(philo, "\x1b[31mis eating", get_time());
 			}
 			run_action(philo, philo->shared->time_to_eat);
 		}
@@ -86,11 +89,17 @@ void	*run_thread(void *data_philo)
 		philo->mutex1 = &philo->fork_left->mutex;
 		philo->mutex2 = &philo->fork_right->mutex;
 	}
+	if (philo->nbr % 2 == 0)
+		usleep(2000);
+	if (philo->nbr % 2 != 0 && philo->nbr == philo->shared->nbr_philos)
+		usleep(1000);
+	printf("empieza %d\n", philo->nbr);
+	printf("time to eat: %d\n", philo->shared->time_to_eat);
+	printf("time to sleep: %d\n", philo->shared->time_to_sleep);
+	printf("time to die: %d\n", philo->shared->time_to_die);
 	while (!philo->shared->someone_is_dead && \
 		(philo->times_must_eat < 0 || philo->times_must_eat))
 	{
-		if (philo->nbr % 2 == 0 || philo->shared->nbr_philos == philo->nbr)
-			usleep(5000);
 		run_eat(philo);
 		if (!philo->shared->someone_is_dead)
 			run_sleep(philo);

@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 20:02:30 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/26 20:46:43 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/27 18:45:41 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	print_change(t_philo *philo, char *action, time_t time)
 		pthread_mutex_lock(&philo->shared->mutex_print);
 		time_action = time - philo->init_time;
 		if (!philo->shared->someone_is_dead)
-			printf("%ld %d %s\n", time_action, philo->nbr, action);
+			printf("\x1b[37m%ld %d %s\n", time_action, philo->nbr, action);
 		pthread_mutex_unlock(&philo->shared->mutex_print);
 	}
 }
