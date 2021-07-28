@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 20:02:30 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/27 18:45:41 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/28 17:08:35 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void	wait_for_dead(t_data *data)
 				if (time_spent(philo) > data->shared.time_to_die + 2)
 				{
 					print_dead(philo);
-					pthread_detach(philo->id_thread);
+					
 				}
 			}
 			i++;
@@ -61,14 +61,15 @@ int	throw_threads(t_data *data)
 	while (i < data->shared.nbr_philos)
 	{
 		philo = &data->philos[i];
-		pthread_join(philo->id_thread, NULL);
+		//pthread_join(philo->id_thread, NULL);
+		pthread_detach(philo->id_thread);
 		i++;
 	}
 	clean_all(data);
 	return (0);
 }
 
-void	print_change(t_philo *philo, char *action, time_t time)
+void	print_change(t_philo *philo, char *action)
 {
 	time_t	time_action;
 
@@ -77,7 +78,7 @@ void	print_change(t_philo *philo, char *action, time_t time)
 		pthread_mutex_lock(&philo->shared->mutex_print);
 		time_action = get_time() - philo->init_time;
 		if (!philo->shared->someone_is_dead)
-			printf("\x1b[37m%ld %d %s real time: %ld\n", time_action, philo->nbr, action, time);
+			printf("\x1b[37m%ld %d %s\n", time_action, philo->nbr, action);
 		pthread_mutex_unlock(&philo->shared->mutex_print);
 	}
 }

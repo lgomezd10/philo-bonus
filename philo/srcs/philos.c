@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 18:46:13 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/27 20:56:49 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/28 19:00:54 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,40 +39,44 @@ static int	run_action(t_philo *philo, useconds_t time_action)
 
 static int	run_sleep(t_philo *philo)
 {
-	print_change(philo, "is sleeping", get_time());
+	int philos;
+	int nbr;
+
+	philos = philo->shared->nbr_philos;
+	nbr = philo->nbr;
+	print_change(philo, "is sleeping");
 	if (run_action(philo, philo->shared->time_to_sleep))
 		return (1);
-	print_change(philo, "is thinking", get_time());
-	if (philo->shared->nbr_philos % 2 != 0 && philo->nbr == 1)
-		usleep(2000);
+	
+	print_change(philo, "is thinking");	
 	return (0);
 }
 
 static int	run_eat(t_philo *philo)
 {
 	if (time_spent(philo) >= philo->shared->time_to_die)
-		return (run_die(philo));	
-	pthread_mutex_lock(philo->mutex1);
+		return (run_die(philo));
+	pthread_mutex_lock(&philo->fork1->mutex);	
 	if (!philo->shared->someone_is_dead)
 	{
-		print_change(philo, "has taken a fork 1", get_time());
+		print_change(philo, "has taken a fork");
 		if (philo->shared->nbr_philos == 1)
 			return (run_die(philo));
-		pthread_mutex_lock(philo->mutex2);
+		pthread_mutex_lock(&philo->fork2->mutex);
 		if (!philo->shared->someone_is_dead)
 		{
-			print_change(philo, "has taken a fork 2", get_time());
+			print_change(philo, "has taken a fork");
 			if (time_spent(philo) < philo->shared->time_to_die)
 			{
 				philo->last_meal = get_time();
-				print_change(philo, "\x1b[31mis eating", get_time());
-			}					
+				print_change(philo, "\x1b[31mis eating");
+			}
 			pthread_mutex_unlock(&philo->shared->catch_fork);
 			run_action(philo, philo->shared->time_to_eat);
 		}
-		pthread_mutex_unlock(philo->mutex1);
+		pthread_mutex_unlock(&philo->fork2->mutex);
 	}
-	pthread_mutex_unlock(philo->mutex2);
+	pthread_mutex_unlock(&philo->fork1->mutex);
 	return (0);
 }
 
@@ -83,24 +87,28 @@ void	*run_thread(void *data_philo)
 	philo = (t_philo *)data_philo;
 	philo->init_time = get_time();
 	philo->last_meal = get_time();
-	philo->mutex1 = &philo->fork_right->mutex;
-	philo->mutex2 = &philo->fork_left->mutex;
-	if (philo->nbr % 2 != 0)
+	philo->fork1 = philo->fork_right;
+	philo->fork2 = philo->fork_left;
+	if (philo->nbr % 2 != 0 && philo->nbr != philo->shared->nbr_philos)
 	{
-		printf("soy el impar %d y mi primer tenedor es el %d\n", philo->nbr, philo->fork_left->nbr);
-		philo->mutex1 = &philo->fork_left->mutex;
-		philo->mutex2 = &philo->fork_right->mutex;
+		philo->fork1 = philo->fork_left;
+		philo->fork2 = philo->fork_right;
 	}
-	else
-		printf("soy el par %d y mi primer tenedor es el %d\n", philo->nbr, philo->fork_right->nbr);
 	if (philo->nbr % 2 == 0)
-		usleep(2000);
-	if (philo->nbr == philo->shared->nbr_philos && philo->nbr % 2 != 0)
-		usleep(3000);
+		usleep(10000);
 	while (!philo->shared->someone_is_dead && \
 		(philo->times_must_eat < 0 || philo->times_must_eat))
-	{		
-		pthread_mutex_lock(&philo->shared->catch_fork);	
+	{
+		if (nbr_philos_odd(philo))
+		{
+			while (philo->shared->pos != get_pos(philo) - 1 && philo->shared->pos != get_pos(philo));
+			if (philo->nbr == philo->shared->nbr_philos)
+				usleep(1000);
+		}
+		pthread_mutex_lock(&philo->shared->catch_fork);
+		philo->shared->pos = get_pos(philo);
+		if (philo->nbr == 1)
+			philo->shared->pos = 1;
 		run_eat(philo);
 		if (!philo->shared->someone_is_dead)
 			run_sleep(philo);

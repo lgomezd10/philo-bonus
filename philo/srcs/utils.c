@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 20:22:16 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/27 20:44:57 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/28 18:38:39 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,4 +68,34 @@ void	clean_all(t_data *data)
 	pthread_mutex_destroy(&data->shared.catch_fork);
 	free(data->philos);
 	free(data->forks);
+}
+
+int nbr_philos_odd(t_philo *philo)
+{
+	return (philo->shared->nbr_philos % 2 != 0);
+}
+
+int	get_pos(t_philo *philo)
+{
+	if (!nbr_philos_odd(philo))
+		return (0);
+	if (philo->shared->nbr_philos > 3)
+	{
+		if (philo->nbr == 1)
+			return (5);	
+		if (philo->nbr % 2 != 0 && philo->nbr != philo->shared->nbr_philos)
+			return (2);
+		if (philo->nbr % 2 == 0)
+			return (3);
+		return (4);
+	}
+	else
+	{
+		if (philo->nbr == 1)
+			return (4);
+		if (philo->nbr % 2 == 0)
+			return (2);
+		return (3);
+	}
+	
 }

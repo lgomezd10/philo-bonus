@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:20 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/26 15:43:41 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/28 17:49:50 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_shared
 	useconds_t		time_to_sleep;
 	pthread_mutex_t	mutex_print;
 	pthread_mutex_t	catch_fork;
+	int				pos;
 }	t_shared;
 
 typedef struct s_fork
@@ -43,8 +44,8 @@ typedef struct s_philo
 	pthread_t		id_thread;
 	t_fork			*fork_left;
 	t_fork			*fork_right;
-	pthread_mutex_t	*mutex1;
-	pthread_mutex_t	*mutex2;
+	t_fork			*fork1;
+	t_fork			*fork2;
 	t_shared		*shared;
 	time_t			last_meal;
 	time_t			init_time;
@@ -62,13 +63,16 @@ typedef struct s_data
 int		ft_atol(const char *nptr);
 time_t	get_time(void);
 time_t	time_spent(t_philo *philo);
+int		nbr_philos_odd(t_philo *philo);
+int		get_pos(t_philo *philo);
 void	clean_all(t_data *data);
 int		load_arguments(t_data *data, int argc, char **argv);
 int		load_forks(t_data *data);
 int		load_philos(t_data *data);
 int		throw_threads(t_data *data);
-void	print_change(t_philo *philo, char *action, time_t time);
+void	print_change(t_philo *philo, char *action);
 void	print_dead(t_philo *philo);
 void	*run_thread(void *data_philo);
+
 
 #endif
