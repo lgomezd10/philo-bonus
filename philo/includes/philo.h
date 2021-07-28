@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:20 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/28 17:49:50 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/28 20:27:37 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ time_t	get_time(void);
 time_t	time_spent(t_philo *philo);
 int		nbr_philos_odd(t_philo *philo);
 int		get_pos(t_philo *philo);
+void	do_mutex_catch_fork(t_philo *philo);
 void	clean_all(t_data *data);
 int		load_arguments(t_data *data, int argc, char **argv);
 int		load_forks(t_data *data);
