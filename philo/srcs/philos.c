@@ -55,13 +55,15 @@ static int	run_eat(t_philo *philo)
 	pthread_mutex_lock(philo->mutex1);
 	if (!philo->shared->someone_is_dead)
 	{
-		print_change(philo, "has taken a fork", get_time());
+		print_change(philo, "has taken a fork 1", get_time());
 		if (philo->shared->nbr_philos == 1)
 			return (run_die(philo));
+		if (philo->nbr == philo->shared->nbr_philos && philo->nbr % 2 != 0)
+			usleep(1000);
 		pthread_mutex_lock(philo->mutex2);
 		if (!philo->shared->someone_is_dead)
 		{
-			print_change(philo, "has taken a fork", get_time());
+			print_change(philo, "has taken a fork 2", get_time());
 			if (time_spent(philo) < philo->shared->time_to_die)
 			{
 				philo->last_meal = get_time();
@@ -84,22 +86,21 @@ void	*run_thread(void *data_philo)
 	philo->last_meal = get_time();
 	philo->mutex1 = &philo->fork_right->mutex;
 	philo->mutex2 = &philo->fork_left->mutex;
-	if (philo->nbr % 2 != 0 || philo->shared->nbr_philos == philo->nbr)
+	if (philo->nbr % 2 != 0)
 	{
+		printf("soy el impar %d y mi primer tenedor es el %d\n", philo->nbr, philo->fork_left->nbr);
 		philo->mutex1 = &philo->fork_left->mutex;
 		philo->mutex2 = &philo->fork_right->mutex;
 	}
-	if (philo->nbr % 2 == 0)
+	else
+		printf("soy el par %d y mi primer tenedor es el %d\n", philo->nbr, philo->fork_right->nbr);
+	if (philo->nbr % 2 == 0 || philo->nbr == philo->shared->nbr_philos)
 		usleep(2000);
-	if (philo->nbr % 2 != 0 && philo->nbr == philo->shared->nbr_philos)
-		usleep(1000);
-	printf("empieza %d\n", philo->nbr);
-	printf("time to eat: %d\n", philo->shared->time_to_eat);
-	printf("time to sleep: %d\n", philo->shared->time_to_sleep);
-	printf("time to die: %d\n", philo->shared->time_to_die);
 	while (!philo->shared->someone_is_dead && \
 		(philo->times_must_eat < 0 || philo->times_must_eat))
 	{
+		if (philo->nbr == philo->shared->nbr_philos && philo->nbr % 2 != 0)
+			usleep(1000);
 		run_eat(philo);
 		if (!philo->shared->someone_is_dead)
 			run_sleep(philo);

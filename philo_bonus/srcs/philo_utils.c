@@ -30,7 +30,8 @@ int	run_action(t_data *data, useconds_t time_action)
 	finish = get_time() + time_action;
 	if (time_spent(data) + time_action >= data->time_to_die)
 		run_die(data);
-	usleep((time_action - 5) * (useconds_t)1000);
+	if (time_action > 10)
+		usleep((time_action - 10) * (useconds_t)1000);
 	while (get_time() < finish)
 		usleep(1000);
 	return (0);

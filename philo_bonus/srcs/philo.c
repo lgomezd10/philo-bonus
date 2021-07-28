@@ -74,6 +74,10 @@ void	run_philo(t_data *data)
 		usleep(2000);
 	while (data->times_must_eat == -1 || data->times_must_eat)
 	{
+		if (data->nbr > data->nbr_philos / 2)
+		usleep(2000);
+		else if (data->nbr == data->nbr_philos && data->nbr % 2 != 0)
+			usleep(1000);
 		run_process(data);
 		if (data->times_must_eat > 0)
 			data->times_must_eat--;

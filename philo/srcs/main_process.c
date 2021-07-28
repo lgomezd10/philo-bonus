@@ -75,9 +75,9 @@ void	print_change(t_philo *philo, char *action, time_t time)
 	if (!philo->shared->someone_is_dead)
 	{
 		pthread_mutex_lock(&philo->shared->mutex_print);
-		time_action = time - philo->init_time;
+		time_action = get_time() - philo->init_time;
 		if (!philo->shared->someone_is_dead)
-			printf("\x1b[37m%ld %d %s\n", time_action, philo->nbr, action);
+			printf("\x1b[37m%ld %d %s real time: %ld\n", time_action, philo->nbr, action, time);
 		pthread_mutex_unlock(&philo->shared->mutex_print);
 	}
 }

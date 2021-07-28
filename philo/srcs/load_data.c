@@ -53,13 +53,13 @@ int	load_philos(t_data *data)
 		data->philos[i].nbr = i + 1;
 		data->philos[i].times_must_eat = data->times_must_eat;
 		data->philos[i].shared = &data->shared;
-		data->philos[i].fork_left = &data->forks[i];
+		data->philos[i].fork_right = &data->forks[i];
 		if (data->shared.nbr_philos == 1)
 			data->philos[i].fork_right = 0;
 		else if (i == data->shared.nbr_philos - 1)
-			data->philos[i].fork_right = &data->forks[0];
+			data->philos[i].fork_left = &data->forks[0];
 		else
-			data->philos[i].fork_right = &data->forks[i + 1];
+			data->philos[i].fork_left = &data->forks[i + 1];
 		i++;
 	}
 	return (0);
