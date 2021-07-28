@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 19:47:11 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/26 16:33:59 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/28 20:43:36 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,9 @@ static void	open_sem(t_data *data)
 	}
 	data->sem_print = sem_open(SEM_PRINT, O_CREAT, 0644, 1);
 	if (data->sem_print == SEM_FAILED)
+		show_error("Semaphore error");
+	data->sem_catch_forks = sem_open(SEM_CATCH, O_CREAT, 0644, 1);
+	if (data->sem_catch_forks == SEM_FAILED)
 		show_error("Semaphore error");
 }
 

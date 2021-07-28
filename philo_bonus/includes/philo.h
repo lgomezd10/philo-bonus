@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:20 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/26 16:12:43 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/28 20:43:36 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <sys/wait.h>
 # include <signal.h>
 # define SEM_PRINT "/sem_print"
+# define SEM_CATCH "/sem_catch"
 
 typedef struct s_fork
 {
@@ -42,6 +43,7 @@ typedef struct s_data
 	t_fork			*fork1;
 	t_fork			*fork2;
 	sem_t			*sem_print;
+	sem_t			*sem_catch_forks;
 	int				someone_is_dead;
 	int				nbr_philos;
 	useconds_t		time_to_die;

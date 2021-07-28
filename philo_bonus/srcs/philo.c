@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 19:44:11 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/08 20:47:27 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/07/28 20:58:55 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,42 @@ static t_fork	*get_second_fork(t_data *data, int nbr)
 }
 
 static void	run_process(t_data *data)
+{
+	int i;
+	int status;
+
+	if (sem_wait(data->sem_catch_forks) == -1)
+		show_error("Sem_wait error");
+	print_change(data, "has taken a fork");
+	if (data->nbr_philos == 1)
+		run_die(data);
+	i = 0;
+	while (i < data->nbr_philos)
+	{
+		if (pthread_create(&data->forks[i].id_thread, NULL, wait_sem, &data->forks[i]))
+			show_error("pthread_create error");
+		i++;
+	}
+	while (!data->fork1 && !data->fork2)
+	{
+		i = 0;
+		while (i < data->nbr_philos)
+		{
+			if (data->forks[i].capture == 1 && !data->fork1)
+				data->fork1 = &data->forks[i];
+			else if (data->forks[i].capture == 1 && !data->fork2)
+				data->fork1 = &data->forks[i];
+		}
+	}
+	//whille para matar procesos
+	print_change(data, "has taken a fork");
+	if (sem_post(data->sem_catch_forks) == -1)
+		show_error("sem_post error");
+	run_eat(data);
+	run_sleep(data);
+}
+
+static void	OLD_run_process(t_data *data)
 {
 	data->fork1 = &data->forks[data->nbr - 1];
 	if (pthread_create(&data->fork1->id_thread, NULL, wait_sem, data->fork1))
