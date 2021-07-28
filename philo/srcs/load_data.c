@@ -20,6 +20,7 @@ int	load_arguments(t_data *data, int argc, char **argv)
 	i = 1;
 	is_int = 1;
 	pthread_mutex_init(&data->shared.mutex_print, NULL);
+	pthread_mutex_init(&data->shared.catch_fork, NULL);
 	data->shared.nbr_philos = ft_atol(argv[i++]);
 	is_int = is_int && data->shared.nbr_philos >= 0;
 	data->shared.time_to_die = ft_atol(argv[i++]);

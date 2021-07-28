@@ -65,6 +65,7 @@ void	clean_all(t_data *data)
 		}
 	}
 	pthread_mutex_destroy(&data->shared.mutex_print);
+	pthread_mutex_destroy(&data->shared.catch_fork);
 	free(data->philos);
 	free(data->forks);
 }

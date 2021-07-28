@@ -27,6 +27,7 @@ typedef struct s_shared
 	useconds_t		time_to_eat;
 	useconds_t		time_to_sleep;
 	pthread_mutex_t	mutex_print;
+	pthread_mutex_t	catch_fork;
 }	t_shared;
 
 typedef struct s_fork
