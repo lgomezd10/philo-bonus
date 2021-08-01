@@ -26,28 +26,32 @@ static int	run_die(t_philo *philo)
 static int	run_action(t_philo *philo, useconds_t time_action)
 {
 	time_t	finish;
+	time_t	time;
 
 	finish = get_time() + time_action;
 	if (time_spent(philo) + time_action >= philo->shared->time_to_die)
 		run_die(philo);
-	if (time_action > 10)
+	if (time_action > 20)
 		usleep((time_action - 10) * (useconds_t)1000);
-	while (get_time() < finish)
-		usleep(1000);
+	time = get_time();
+	while (time < finish)
+		time = get_time();
 	return (0);
 }
 
 static int	run_sleep(t_philo *philo)
 {
-	int	philos;
-	int	nbr;
-
-	philos = philo->shared->nbr_philos;
-	nbr = philo->nbr;
+	int time_wait;
 	print_change(philo, "is sleeping");
 	if (run_action(philo, philo->shared->time_to_sleep))
 		return (1);
 	print_change(philo, "is thinking");
+	if (nbr_philos_odd(philo))
+	{
+		time_wait = philo->shared->time_to_eat * 3;
+		while (time_spent(philo) < time_wait)
+			usleep(100);
+	}	
 	return (0);
 }
 
@@ -70,7 +74,6 @@ static int	run_eat(t_philo *philo)
 				philo->last_meal = get_time();
 				print_change(philo, "\x1b[31mis eating");
 			}
-			pthread_mutex_unlock(&philo->shared->catch_fork);
 			run_action(philo, philo->shared->time_to_eat);
 		}
 		pthread_mutex_unlock(&philo->fork2->mutex);
@@ -88,17 +91,16 @@ void	*run_thread(void *data_philo)
 	philo->last_meal = get_time();
 	philo->fork1 = philo->fork_right;
 	philo->fork2 = philo->fork_left;
-	if (philo->nbr % 2 != 0 && philo->nbr != philo->shared->nbr_philos)
+	if (philo->nbr % 2 == 0)
 	{
 		philo->fork1 = philo->fork_left;
 		philo->fork2 = philo->fork_right;
 	}
-	if (philo->nbr % 2 == 0)
-		usleep(10000);
+	if (philo->nbr % 2 == 0 || philo->nbr == philo->shared->nbr_philos)
+		usleep(2000);
 	while (!philo->shared->someone_is_dead && \
 		(philo->times_must_eat < 0 || philo->times_must_eat))
 	{
-		do_mutex_catch_fork(philo);
 		run_eat(philo);
 		if (!philo->shared->someone_is_dead)
 			run_sleep(philo);
