@@ -25,17 +25,22 @@ static int	run_die(t_philo *philo)
 
 static int	run_action(t_philo *philo, useconds_t time_action)
 {
-	time_t	finish;
-	time_t	time;
+	//time_t	finish;
+	//time_t	time;
 
-	finish = get_time() + time_action;
+	//finish = get_time() + time_action;
 	if (time_spent(philo) + time_action >= philo->shared->time_to_die)
 		run_die(philo);
+		/*
 	if (time_action > 20)
 		usleep((time_action - 10) * (useconds_t)1000);
+		*/
+	/*
 	time = get_time();
-	while (time < finish)
+	while (time <= finish)
 		time = get_time();
+		*/
+	usleep(time_action * 1000);
 	return (0);
 }
 
@@ -48,6 +53,7 @@ static int	run_sleep(t_philo *philo)
 	print_change(philo, "is thinking");
 	if (nbr_philos_odd(philo))
 	{
+		printf("No debería entrar aquí\n");
 		time_wait = philo->shared->time_to_eat * 3;
 		while (time_spent(philo) < time_wait)
 			usleep(100);
@@ -66,6 +72,7 @@ static int	run_eat(t_philo *philo)
 		if (philo->shared->nbr_philos == 1)
 			return (run_die(philo));
 		pthread_mutex_lock(&philo->fork2->mutex);
+		//pthread_mutex_unlock(&philo->shared->catch_fork);
 		if (!philo->shared->someone_is_dead)
 		{
 			print_change(philo, "has taken a fork");
@@ -97,10 +104,11 @@ void	*run_thread(void *data_philo)
 		philo->fork2 = philo->fork_right;
 	}
 	if (philo->nbr % 2 == 0 || philo->nbr == philo->shared->nbr_philos)
-		usleep(2000);
+		usleep(5000);
 	while (!philo->shared->someone_is_dead && \
 		(philo->times_must_eat < 0 || philo->times_must_eat))
 	{
+		//pthread_mutex_lock(&philo->shared->catch_fork);
 		run_eat(philo);
 		if (!philo->shared->someone_is_dead)
 			run_sleep(philo);

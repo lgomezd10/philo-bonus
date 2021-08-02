@@ -29,6 +29,8 @@ static void	end_process(t_data *data)
 		sem_unlink(data->forks[i].name);
 		i++;
 	}
+	sem_unlink(SEM_CATCH);
+	sem_close(data->sem_catch_forks);
 	sem_unlink(SEM_PRINT);
 	sem_close(data->sem_print);
 	clean_all(data);
@@ -86,7 +88,7 @@ void	print_change(t_data *data, char *action)
 	if (sem_wait(data->sem_print) == -1)
 		show_error("Error in semaphore print change");
 	time_action = get_time() - data->init_time;
-	printf("%ld %d %s\n", time_action, data->nbr, action);
+	printf("%ld %d %s\x1b[37m\n", time_action, data->nbr, action);
 	sem_post(data->sem_print);
 }
 

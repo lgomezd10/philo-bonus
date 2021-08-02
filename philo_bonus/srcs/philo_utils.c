@@ -30,10 +30,10 @@ int	run_action(t_data *data, useconds_t time_action)
 	finish = get_time() + time_action;
 	if (time_spent(data) + time_action >= data->time_to_die)
 		run_die(data);
-	if (time_action > 10)
+	if (time_action > 20)
 		usleep((time_action - 10) * (useconds_t)1000);
-	while (get_time() < finish)
-		usleep(1000);
+	while (get_time() < finish);
+	//printf("%ld: %d termina una accion\n", time_spent(data) ,data->nbr);
 	return (0);
 }
 
@@ -57,7 +57,7 @@ int	run_eat(t_data *data)
 	if (time_spent(data) >= data->time_to_die)
 		return (run_die(data));
 	data->last_meal = get_time();
-	print_change(data, "is eating");
+	print_change(data, "\x1b[31mis eating");
 	run_action(data, data->time_to_eat);
 	if (sem_post(data->fork1->sem) == -1)
 		show_error("sem_post error");

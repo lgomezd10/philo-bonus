@@ -34,6 +34,8 @@ typedef struct s_fork
 	pthread_t	id_thread;
 	int			capture;
 	pid_t		pid;
+	int			pro;
+	int		needed;
 }	t_fork;
 
 typedef struct s_data

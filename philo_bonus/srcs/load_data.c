@@ -87,6 +87,8 @@ static void	unlink_sem(t_data *data)
 	}
 	sem_close(data->sem_print);
 	sem_unlink(SEM_PRINT);
+	sem_close(data->sem_catch_forks);
+	sem_unlink(SEM_CATCH);
 }
 
 int	load_forks(t_data *data)

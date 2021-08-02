@@ -14,106 +14,108 @@
 
 static void	*wait_sem(void *data)
 {
-	t_fork	*fork;
+	t_fork	*data_fork;
 
-	fork = (t_fork *)data;
-	if (sem_wait(fork->sem) == -1)
-		show_error("Sem_wait error");
-	fork->capture = 1;
+	data_fork = (t_fork *)data;
+	if (data_fork->needed)
+	{
+		if (sem_wait(data_fork->sem) == -1)
+			show_error("Sem_wait error");
+		if (data_fork->needed)
+		{
+			data_fork->capture = 1;
+		}
+		else
+		{
+			if (sem_post(data_fork->sem) == -1)
+				show_error("sem_post error");
+		}
+	}
 	return (0);
 }
 
-static t_fork	*get_second_fork(t_data *data, int nbr)
-{
-	int	half;
-
-	half = data->nbr_philos / 2;
-	if (data->nbr_philos == 1)
-		return (0);
-	if (data->nbr_philos % 2 != 0 && nbr == data->nbr_philos)
-		return (&data->forks[0]);
-	else if (nbr > half)
-		return (&data->forks[(nbr - half) - 1]);
-	else
-		return (&data->forks[(nbr + half) - 1]);
-}
 
 static void	run_process(t_data *data)
 {
 	int i;
-	int status;
 
 	if (sem_wait(data->sem_catch_forks) == -1)
 		show_error("Sem_wait error");
-	print_change(data, "has taken a fork");
+	//printf("\x1b[34m%ld el proceso %d ha entrado a coger tenedores\x1b[37m\n", time_spent(data), data->nbr);
 	if (data->nbr_philos == 1)
+	{
 		run_die(data);
+	}
 	i = 0;
 	while (i < data->nbr_philos)
 	{
+		data->forks[i].pro = data->nbr;
+		data->forks[i].needed = 1;
 		if (pthread_create(&data->forks[i].id_thread, NULL, wait_sem, &data->forks[i]))
 			show_error("pthread_create error");
 		i++;
 	}
-	while (!data->fork1 && !data->fork2)
+
+	while (!data->fork1 || !data->fork2)
 	{
-		i = 0;
+		i = 0;		
 		while (i < data->nbr_philos)
 		{
-			if (data->forks[i].capture == 1 && !data->fork1)
-				data->fork1 = &data->forks[i];
-			else if (data->forks[i].capture == 1 && !data->fork2)
-				data->fork1 = &data->forks[i];
+			if (data->forks[i].capture == 1)
+			{
+				if (!data->fork1)
+				{
+					data->fork1 = &data->forks[i];
+					print_change(data, "has taken a fork");
+				}
+				else if (!data->fork2 && data->forks[i].nbr != data->fork1->nbr)
+				{
+					data->fork2 = &data->forks[i];
+					print_change(data, "has taken a fork");
+				}
+			}
+			if (time_spent(data) >= data->time_to_die)
+				run_die(data);
+			i++;
 		}
 	}
-	//whille para matar procesos
-	print_change(data, "has taken a fork");
 	if (sem_post(data->sem_catch_forks) == -1)
 		show_error("sem_post error");
+	i = 0;
+	while (i < data->nbr_philos)
+	{
+		if (data->forks[i].nbr != data->fork1->nbr && data->forks[i].nbr != data->fork2->nbr)
+			data->forks[i].needed = 0;
+		pthread_detach(data->forks[i].id_thread);		
+		data->forks[i].id_thread = 0;
+		i++;
+	}
+	
+	i = 0;
+	while (i < data->nbr_philos)
+	{
+		if (data->forks[i].nbr != data->fork1->nbr && data->forks[i].nbr != data->fork2->nbr)
+		{
+			if (data->forks[i].capture)
+			{			
+				if (sem_post(data->forks[i].sem) == -1)
+					show_error("sem_post error");
+				data->forks[i].capture = 0;
+			}
+		}
+		i++;
+	}
+	
 	run_eat(data);
 	run_sleep(data);
 }
 
-static void	OLD_run_process(t_data *data)
-{
-	data->fork1 = &data->forks[data->nbr - 1];
-	if (pthread_create(&data->fork1->id_thread, NULL, wait_sem, data->fork1))
-		show_error("pthread_create error");
-	data->fork2 = get_second_fork(data, data->nbr);
-	if (data->fork2 && \
-		pthread_create(&data->fork2->id_thread, NULL, wait_sem, data->fork2))
-		show_error("pthread_create error");
-	while (data->fork2 && !data->fork1->capture && !data->fork2->capture)
-	{
-		usleep(1000);
-		if (time_spent(data) > data->time_to_die)
-			run_die(data);
-	}
-	print_change(data, "has taken a fork");
-	if (data->nbr_philos == 1)
-		run_die(data);
-	while (!data->fork1->capture || !data->fork2->capture)
-	{
-		usleep(1000);
-		if (time_spent(data) > data->time_to_die)
-			run_die(data);
-	}
-	print_change(data, "has taken a fork");
-	run_eat(data);
-	run_sleep(data);
-}
 
 void	run_philo(t_data *data)
 {
 	data->last_meal = get_time();
-	if (data->nbr > data->nbr_philos / 2)
-		usleep(2000);
 	while (data->times_must_eat == -1 || data->times_must_eat)
 	{
-		if (data->nbr > data->nbr_philos / 2)
-		usleep(2000);
-		else if (data->nbr == data->nbr_philos && data->nbr % 2 != 0)
-			usleep(1000);
 		run_process(data);
 		if (data->times_must_eat > 0)
 			data->times_must_eat--;
