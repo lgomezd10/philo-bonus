@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:20 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/28 20:27:37 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 15:40:41 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ typedef struct s_shared
 	useconds_t		time_to_eat;
 	useconds_t		time_to_sleep;
 	pthread_mutex_t	mutex_print;
-	pthread_mutex_t	catch_fork;
 	int				pos;
 }	t_shared;
 
@@ -64,8 +63,6 @@ int		ft_atol(const char *nptr);
 time_t	get_time(void);
 time_t	time_spent(t_philo *philo);
 int		nbr_philos_odd(t_philo *philo);
-int		get_pos(t_philo *philo);
-void	do_mutex_catch_fork(t_philo *philo);
 void	clean_all(t_data *data);
 int		load_arguments(t_data *data, int argc, char **argv);
 int		load_forks(t_data *data);
@@ -74,6 +71,5 @@ int		throw_threads(t_data *data);
 void	print_change(t_philo *philo, char *action);
 void	print_dead(t_philo *philo);
 void	*run_thread(void *data_philo);
-
 
 #endif

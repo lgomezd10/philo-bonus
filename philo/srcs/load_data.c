@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:52 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/28 18:40:49 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 15:32:35 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int	load_arguments(t_data *data, int argc, char **argv)
 	i = 1;
 	is_int = 1;
 	pthread_mutex_init(&data->shared.mutex_print, NULL);
-	pthread_mutex_init(&data->shared.catch_fork, NULL);
 	data->shared.pos = 4;
 	if (data->shared.nbr_philos < 4)
 		data->shared.pos = 3;

@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 20:22:16 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/28 20:36:15 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 15:33:45 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ void	clean_all(t_data *data)
 		}
 	}
 	pthread_mutex_destroy(&data->shared.mutex_print);
-	pthread_mutex_destroy(&data->shared.catch_fork);
 	free(data->philos);
 	free(data->forks);
 }
