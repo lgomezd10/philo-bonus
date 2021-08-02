@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 19:47:11 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/28 20:43:36 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 17:15:29 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*get_name(int nbr)
 {
 	char	*name;
 
-	name = malloc(sizeof(char) * 6);
+	name = (char *)malloc(sizeof(char) * 6);
 	if (!name)
 		show_error("Malloc error");
 	name[0] = '/';

@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 19:44:11 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/28 20:58:55 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 16:28:38 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,31 +34,13 @@ static void	*wait_sem(void *data)
 	return (0);
 }
 
-
-static void	run_process(t_data *data)
+static void	catch_forks(t_data *data)
 {
-	int i;
-
-	if (sem_wait(data->sem_catch_forks) == -1)
-		show_error("Sem_wait error");
-	//printf("\x1b[34m%ld el proceso %d ha entrado a coger tenedores\x1b[37m\n", time_spent(data), data->nbr);
-	if (data->nbr_philos == 1)
-	{
-		run_die(data);
-	}
-	i = 0;
-	while (i < data->nbr_philos)
-	{
-		data->forks[i].pro = data->nbr;
-		data->forks[i].needed = 1;
-		if (pthread_create(&data->forks[i].id_thread, NULL, wait_sem, &data->forks[i]))
-			show_error("pthread_create error");
-		i++;
-	}
+	int	i;
 
 	while (!data->fork1 || !data->fork2)
 	{
-		i = 0;		
+		i = 0;
 		while (i < data->nbr_philos)
 		{
 			if (data->forks[i].capture == 1)
@@ -79,25 +61,28 @@ static void	run_process(t_data *data)
 			i++;
 		}
 	}
-	if (sem_post(data->sem_catch_forks) == -1)
-		show_error("sem_post error");
+}
+
+static void	free_forks(t_data *data)
+{
+	int	i;
+
 	i = 0;
 	while (i < data->nbr_philos)
 	{
-		if (data->forks[i].nbr != data->fork1->nbr && data->forks[i].nbr != data->fork2->nbr)
+		if (!fork_in_use(data, data->forks[i]))
 			data->forks[i].needed = 0;
-		pthread_detach(data->forks[i].id_thread);		
+		pthread_detach(data->forks[i].id_thread);
 		data->forks[i].id_thread = 0;
 		i++;
 	}
-	
 	i = 0;
 	while (i < data->nbr_philos)
 	{
-		if (data->forks[i].nbr != data->fork1->nbr && data->forks[i].nbr != data->fork2->nbr)
+		if (!fork_in_use(data, data->forks[i]))
 		{
 			if (data->forks[i].capture)
-			{			
+			{
 				if (sem_post(data->forks[i].sem) == -1)
 					show_error("sem_post error");
 				data->forks[i].capture = 0;
@@ -105,11 +90,34 @@ static void	run_process(t_data *data)
 		}
 		i++;
 	}
-	
+}
+
+static void	run_process(t_data *data)
+{
+	int		i;
+	t_fork	*fork;
+
+	if (sem_wait(data->sem_catch_forks) == -1)
+		show_error("Sem_wait error");
+	if (data->nbr_philos == 1)
+		run_die(data);
+	i = 0;
+	while (i < data->nbr_philos)
+	{
+		fork = &data->forks[i];
+		fork->pro = data->nbr;
+		fork->needed = 1;
+		if (pthread_create(&fork->id_thread, NULL, wait_sem, fork))
+			show_error("pthread_create error");
+		i++;
+	}
+	catch_forks(data);
+	if (sem_post(data->sem_catch_forks) == -1)
+		show_error("sem_post error");
+	free_forks(data);
 	run_eat(data);
 	run_sleep(data);
 }
-
 
 void	run_philo(t_data *data)
 {

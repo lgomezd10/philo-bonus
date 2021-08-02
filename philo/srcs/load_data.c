@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:52 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/08/02 15:32:35 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 17:02:56 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	load_philos(t_data *data)
 		data->philos[i].shared = &data->shared;
 		data->philos[i].fork_right = &data->forks[i];
 		if (data->shared.nbr_philos == 1)
-			data->philos[i].fork_right = 0;
+			data->philos[i].fork_left = 0;
 		else if (i == data->shared.nbr_philos - 1)
 			data->philos[i].fork_left = &data->forks[0];
 		else

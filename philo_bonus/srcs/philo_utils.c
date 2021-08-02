@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 20:01:56 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/05 20:03:41 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 16:32:18 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,16 @@ int	run_die(t_data *data)
 int	run_action(t_data *data, useconds_t time_action)
 {
 	time_t	finish;
+	time_t	time;
 
 	finish = get_time() + time_action;
 	if (time_spent(data) + time_action >= data->time_to_die)
 		run_die(data);
 	if (time_action > 20)
 		usleep((time_action - 10) * (useconds_t)1000);
-	while (get_time() < finish);
-	//printf("%ld: %d termina una accion\n", time_spent(data) ,data->nbr);
+	time = get_time();
+	while (time < finish)
+		time = get_time();
 	return (0);
 }
 
@@ -68,4 +70,13 @@ int	run_eat(t_data *data)
 	data->fork1 = 0;
 	data->fork2 = 0;
 	return (0);
+}
+
+int	fork_in_use(t_data *data, t_fork fork)
+{
+	int	in_use;
+
+	in_use = fork.nbr == data->fork1->nbr;
+	in_use = in_use || fork.nbr == data->fork2->nbr;
+	return (in_use);
 }

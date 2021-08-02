@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:20 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/28 20:43:36 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 16:30:50 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct s_fork
 	int			capture;
 	pid_t		pid;
 	int			pro;
-	int		needed;
+	int			needed;
 }	t_fork;
 
 typedef struct s_data
@@ -60,6 +60,7 @@ void	show_error(char *str);
 int		ft_atol(const char *nptr);
 time_t	get_time(void);
 time_t	time_spent(t_data *data);
+int		fork_in_use(t_data *data, t_fork fork);
 int		load_arguments(t_data *data, int argc, char **argv);
 int		load_forks(t_data *data);
 int		load_philos(t_data *data);
