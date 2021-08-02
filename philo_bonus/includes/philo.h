@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 19:48:20 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/08/02 16:30:50 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 17:40:09 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct s_data
 	int				nbr_philos;
 	useconds_t		time_to_die;
 	useconds_t		time_to_eat;
-	useconds_t		time_to_sleep;	
+	useconds_t		time_to_sleep;
 	int				times_must_eat;
 	time_t			last_meal;
 	time_t			init_time;

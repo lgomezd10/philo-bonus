@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 19:44:11 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/08/02 16:28:38 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 17:33:47 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ static void	free_forks(t_data *data)
 	}
 }
 
-static void	run_process(t_data *data)
+void	run_process(t_data *data)
 {
 	int		i;
 	t_fork	*fork;

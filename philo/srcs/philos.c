@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 18:46:13 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/08/02 17:03:34 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 18:03:42 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static int	run_eat(t_philo *philo)
 			if (time_spent(philo) < philo->shared->time_to_die)
 			{
 				philo->last_meal = get_time();
-				print_change(philo, "\x1b[31mis eating");
+				print_change(philo, "is eating");
 			}
 			run_action(philo, philo->shared->time_to_eat);
 		}

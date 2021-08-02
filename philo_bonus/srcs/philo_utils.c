@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 20:01:56 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/08/02 16:32:18 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 18:06:04 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	run_eat(t_data *data)
 	if (time_spent(data) >= data->time_to_die)
 		return (run_die(data));
 	data->last_meal = get_time();
-	print_change(data, "\x1b[31mis eating");
+	print_change(data, "is eating");
 	run_action(data, data->time_to_eat);
 	if (sem_post(data->fork1->sem) == -1)
 		show_error("sem_post error");

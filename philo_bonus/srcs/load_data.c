@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 19:47:11 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/08/02 17:15:29 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 17:24:52 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ char	*get_name(int nbr)
 	return (name);
 }
 
-static void	open_sem(t_data *data)
+static void	open_sem(t_data *data, int create_names)
 {
 	int	i;
 
@@ -60,7 +60,8 @@ static void	open_sem(t_data *data)
 	while (i < data->nbr_philos)
 	{
 		data->forks[i].nbr = i + 1;
-		data->forks[i].name = get_name(i + 1);
+		if (create_names)
+			data->forks[i].name = get_name(i + 1);
 		data->forks[i].sem = sem_open(data->forks[i].name, O_CREAT, 0644, 1);
 		if (data->forks[i].sem == SEM_FAILED)
 			show_error("Semaphore error");
@@ -100,8 +101,8 @@ int	load_forks(t_data *data)
 	if (!data->forks)
 		return (1);
 	memset(data->forks, '\0', size_array);
-	open_sem(data);
+	open_sem(data, 1);
 	unlink_sem(data);
-	open_sem(data);
+	open_sem(data, 0);
 	return (0);
 }

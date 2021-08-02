@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/05 19:49:35 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/07/26 16:25:54 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/08/02 18:06:24 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	print_change(t_data *data, char *action)
 	if (sem_wait(data->sem_print) == -1)
 		show_error("Error in semaphore print change");
 	time_action = get_time() - data->init_time;
-	printf("%ld %d %s\x1b[37m\n", time_action, data->nbr, action);
+	printf("%ld %d %s\n", time_action, data->nbr, action);
 	sem_post(data->sem_print);
 }
 
